@@ -123,13 +123,14 @@ def save_results(path, content):
 
 def evaluate(model, dataloader):
     model.eval()
-    no_correct = 0
+    no_correct, total = 0, 0
     with torch.no_grad():
         for d in dataloader:
             imgs, labs = d[0].to(DEVICE), d[1].to(DEVICE)
             _, predict = model(imgs).max(1)
+            total += labs.size(0)
             no_correct += (predict == labs).sum().item()
-    return no_correct/100
+    return no_correct/total
 
 def train(model, dataloaders, filename):
     model.train()
